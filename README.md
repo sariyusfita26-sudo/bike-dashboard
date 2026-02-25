@@ -16,5 +16,10 @@ python -m venv venv
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 .\venv\Scripts\Activate
 pip install -r requirements.txt
+
+```
+## 2. Jalankan Dashboard
+
+```powershell
 cd dashboard
 streamlit run dashboard.py
