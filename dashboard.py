@@ -8,16 +8,14 @@ sns.set(style="whitegrid")
 st.set_page_config(page_title="Bike Sharing Dashboard", layout="wide")
 
 # ----------------------
-# Header Dashboard
-# ----------------------
+# Header Dashboard (judul saja)
 st.markdown(
-    "<h1 style='text-align: center; color: #2E8B57;'>Dashboard Penyewaan Sepeda 2011-2012 🚴</h1>",
+    "<h1 style='text-align: center; color: #2E8B57;'>Dashboard Penyewaan Sepeda 2011-2012</h1>",
     unsafe_allow_html=True
 )
 
 # ----------------------
 # Load Data
-# ----------------------
 day_df = pd.read_csv("main_data_day.csv")
 hour_df = pd.read_csv("main_data_hour.csv")
 
@@ -27,37 +25,39 @@ hour_df['dteday'] = pd.to_datetime(hour_df['dteday'])
 
 # ----------------------
 # Sidebar Filters
-# ----------------------
 st.sidebar.header("Filter Data")
 
-# YEARS
+# Tahun
 years_options = sorted(day_df['yr'].dropna().unique())
 years = st.sidebar.multiselect("Pilih Tahun:", options=years_options, default=years_options)
 
-# MONTHS
+# Bulan
 months_options = sorted(day_df['mnth'].dropna().unique())
 months = st.sidebar.multiselect("Pilih Bulan:", options=months_options, default=months_options)
 
-# WEEKDAYS
+# Hari
 weekdays_options = sorted(day_df['weekday'].dropna().unique())
 weekdays = st.sidebar.multiselect("Pilih Hari:", options=weekdays_options, default=weekdays_options)
 
-# HOURS (hanya hour_df)
+# Jam (hour_df)
 hours_options = sorted(hour_df['hr'].dropna().unique())
 hours = st.sidebar.multiselect("Pilih Jam:", options=hours_options, default=hours_options)
 
-# APPLY FILTER
+# Apply filter
 day_df = day_df[day_df['yr'].isin(years) & day_df['mnth'].isin(months) & day_df['weekday'].isin(weekdays)]
-hour_df = hour_df[hour_df['yr'].isin(years) & hour_df['mnth'].isin(months) & hour_df['weekday'].isin(weekdays) & hour_df['hr'].isin(hours)]
+hour_df = hour_df[
+    hour_df['yr'].isin(years) &
+    hour_df['mnth'].isin(months) &
+    hour_df['weekday'].isin(weekdays) &
+    hour_df['hr'].isin(hours)
+]
 
 # ----------------------
 # Tabs
-# ----------------------
 tab1, tab2 = st.tabs(["Harian", "Per Jam"])
 
 # ----------------------
 # TAB 1: Harian (day_df)
-# ----------------------
 with tab1:
     st.header("Dashboard Harian")
 
@@ -66,7 +66,7 @@ with tab1:
     with col1:
         st.metric("Total Penyewaan", int(day_df['cnt'].sum()))
     with col2:
-        st.metric("Rata-rata Penyewaan", round(day_df['cnt'].mean(),2))
+        st.metric("Rata-rata Penyewaan", round(day_df['cnt'].mean(), 2))
 
     # Rata-rata per Season
     st.subheader("Rata-rata Penyewaan per Season")
@@ -77,7 +77,7 @@ with tab1:
     ax.set_ylabel("Rata-rata Penyewaan")
     st.pyplot(fig)
 
-    # Rata-rata per Cuaca
+    # Rata-rata per Cuaca (only 1,2,3)
     st.subheader("Rata-rata Penyewaan per Kondisi Cuaca")
     weather_avg = day_df[day_df['weathersit'].isin([1,2,3])].groupby('weathersit')['cnt'].mean()
     fig, ax = plt.subplots()
@@ -109,7 +109,6 @@ with tab1:
 
 # ----------------------
 # TAB 2: Per Jam (hour_df)
-# ----------------------
 with tab2:
     st.header("Dashboard Per Jam")
 
